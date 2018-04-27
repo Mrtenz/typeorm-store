@@ -5,7 +5,7 @@ A TypeORM-based store for [express-session](https://github.com/expressjs/session
 
 ## Installation
 ```bash
-$ yarn add https://github.com/Mrtenz/typeorm-store.git
+$ yarn add typeorm-store
 ```
 
 ## Usage
