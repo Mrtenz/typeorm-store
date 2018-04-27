@@ -1,6 +1,6 @@
 {
   "name": "typeorm-store",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A TypeORM-based store for express-session",
   "main": "lib/typeormStore.js",
   "typings": "typings/index.d.ts",
