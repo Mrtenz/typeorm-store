@@ -12,7 +12,7 @@ export interface Options {
     repository: Repository<SessionEntity>;
 
     /**
-     * Session TTL in milliseconds. Defaults to 86400000 (1 day)
+     * Session TTL in seconds. Defaults to 86400 (1 day)
      */
     ttl?: number;
 }
@@ -129,7 +129,7 @@ export class TypeormStore extends Store {
     }
 
     /**
-     * Get the session TTL (time to live) in milliseconds.
+     * Get the session TTL (time to live) in seconds.
      * @param session
      * @return {number}
      */
@@ -138,7 +138,7 @@ export class TypeormStore extends Store {
             return this.ttl;
         }
         return session.cookie && session.cookie.maxAge
-            ? session.cookie.maxAge
-            : 86400000;
+            ? Math.floor(session.cookie.maxAge / 1000)
+            : 86400;
     }
 }
