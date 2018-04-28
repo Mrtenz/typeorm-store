@@ -106,7 +106,7 @@ export class TypeormStore extends Store {
         }
 
         const ttl = this.getTTL(session);
-        const expiresAt = new Date().getTime() + ttl;
+        const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
         this.repository.save({ sessionId, data, expiresAt })
             .then(() => callback(null))
@@ -121,7 +121,7 @@ export class TypeormStore extends Store {
      */
     public touch = (sessionId: string, session: any, callback: (error: any) => void): void => {
         const ttl = this.getTTL(session);
-        const expiresAt = new Date().getTime() + ttl;
+        const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
         this.repository.update({ sessionId }, { expiresAt })
             .then(() => callback(null))
