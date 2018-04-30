@@ -2,8 +2,7 @@ import { Repository } from 'typeorm';
 import { Store } from 'express-session';
 
 export interface SessionEntity {
-    id: number;
-    sessionId: string;
+    id: string;
     expiresAt: number;
     data: string;
 }
@@ -45,11 +44,11 @@ export class TypeormStore extends Store {
 
     /**
      * Destroy a session
-     * @param {string} sessionId
+     * @param {string} id
      * @param {(error: any) => void} callback
      */
-    public destroy = (sessionId: string, callback: (error: any) => void): void => {
-        this.repository.delete({ sessionId })
+    public destroy = (id: string, callback: (error: any) => void): void => {
+        this.repository.delete(id)
             .then(() => callback(null))
             .catch((error: any) => callback(error));
     }
@@ -76,11 +75,11 @@ export class TypeormStore extends Store {
 
     /**
      * Get a session.
-     * @param {string} sessionId
+     * @param {string} id
      * @param {(error: any, session?: any) => any} callback
      */
-    public get = (sessionId: string, callback: (error: any, session?: any) => void): void => {
-        this.repository.findOne({ sessionId })
+    public get = (id: string, callback: (error: any, session?: any) => void): void => {
+        this.repository.findOne(id)
             .then((session: SessionEntity | undefined) => {
                 if (!session) {
                     return callback(null);
@@ -93,11 +92,11 @@ export class TypeormStore extends Store {
 
     /**
      * Set a session.
-     * @param {string} sessionId
+     * @param {string} id
      * @param session
      * @param {(error: any) => void} callback
      */
-    public set = (sessionId: string, session: any, callback: (error: any) => void): void => {
+    public set = (id: string, session: any, callback: (error: any) => void): void => {
         let data;
         try {
             data = JSON.stringify(session);
@@ -108,22 +107,22 @@ export class TypeormStore extends Store {
         const ttl = this.getTTL(session);
         const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
-        this.repository.save({ sessionId, data, expiresAt })
+        this.repository.save({ id, data, expiresAt })
             .then(() => callback(null))
             .catch((error: any) => callback(error));
     }
 
     /**
      * Refresh the session expiry time.
-     * @param {string} sessionId
+     * @param {string} id
      * @param session
      * @param {(error: any) => void} callback
      */
-    public touch = (sessionId: string, session: any, callback: (error: any) => void): void => {
+    public touch = (id: string, session: any, callback: (error: any) => void): void => {
         const ttl = this.getTTL(session);
         const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
-        this.repository.update({ sessionId }, { expiresAt })
+        this.repository.update(id, { expiresAt })
             .then(() => callback(null))
             .catch((error: any) => callback(error));
     }
