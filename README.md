@@ -1,8 +1,6 @@
 # typeorm-store
 A TypeORM-based store for [express-session](https://github.com/expressjs/session).
 
-**Note**: This has not been tested yet.
-
 ## Installation
 ```bash
 $ yarn add typeorm-store
