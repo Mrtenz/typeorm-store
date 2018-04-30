@@ -9,16 +9,13 @@ $ yarn add typeorm-store
 ## Usage
 First, make a new `Session` entity. Make sure to synchronize the entity to the database. `typeorm-store` will not to this for you.
 ```typescript
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 import { SessionEntity } from 'typeorm-store';
 
 @Entity()
 export class Session extends BaseEntity implements SessionEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    sessionId: string;
+    @PrimaryColumn()
+    id: string;
 
     @Column()
     expiresAt: number;
