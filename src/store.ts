@@ -2,8 +2,19 @@ import { Repository } from 'typeorm';
 import { Store } from 'express-session';
 
 export interface SessionEntity {
+    /**
+     * The randomly generated session ID.
+     */
     id: string;
+
+    /**
+     * The UNIX timestamp at which the session will expire.
+     */
     expiresAt: number;
+
+    /**
+     * The JSON data of the session.
+     */
     data: string;
 }
 
