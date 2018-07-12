@@ -36,9 +36,9 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/express-session@^1.15.8":
-  version "1.15.8"
-  resolved "https://registry.yarnpkg.com/@types/express-session/-/express-session-1.15.8.tgz#b187732e8fa88ad9fd5d93c021696460a0694b7c"
+"@types/express-session@^1.15.10":
+  version "1.15.10"
+  resolved "https://registry.yarnpkg.com/@types/express-session/-/express-session-1.15.10.tgz#d0ae7d3d2fee26512574306333ac272a37430c86"
   dependencies:
     "@types/events" "*"
     "@types/express" "*"
@@ -4533,9 +4533,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typeorm@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.3.tgz#55ef91dfc71c41b590a53b80c17c56742b9deb9d"
+typeorm@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.7.tgz#4bbbace80dc91b1303be13f42d44ebf01d1b2558"
   dependencies:
     app-root-path "^2.0.1"
     buffer "^5.1.0"

@@ -59,22 +59,22 @@ export class TypeormStore extends Store {
    * @param {string} id
    * @param {(error: any) => void} callback
    */
-  destroy = (id: string, callback: (error: any) => void): void => {
+  destroy = (id: string, callback: ((error: any) => void) | undefined): void => {
     this.repository
       .delete(id)
-      .then(() => callback(null))
-      .catch((error: any) => callback(error));
+      .then(() => (callback ? callback(null) : {}))
+      .catch((error: any) => (callback ? callback(error) : {}));
   };
 
   /**
    * Clear all sessions.
    * @param {(error: any) => void} callback
    */
-  clear = (callback: (error: any) => void): void => {
+  clear = (callback: ((error: any) => void) | undefined): void => {
     this.repository
       .clear()
-      .then(() => callback(null))
-      .catch((error: any) => callback(error));
+      .then(() => (callback ? callback(null) : {}))
+      .catch((error: any) => (callback ? callback(error) : {}));
   };
 
   /**
@@ -112,12 +112,15 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  set = (id: string, session: any, callback: (error: any) => void): void => {
+  set = (id: string, session: any, callback: ((error: any) => void) | undefined): void => {
     let data;
     try {
       data = JSON.stringify(session);
     } catch (error) {
-      return callback(error);
+      if (callback) {
+        return callback(error);
+      }
+      throw error;
     }
 
     const ttl = this.getTTL(session);
@@ -125,8 +128,8 @@ export class TypeormStore extends Store {
 
     this.repository
       .save({ id, data, expiresAt })
-      .then(() => callback(null))
-      .catch((error: any) => callback(error));
+      .then(() => (callback ? callback(null) : {}))
+      .catch((error: any) => (callback ? callback(error) : {}));
   };
 
   /**
@@ -135,14 +138,14 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  touch = (id: string, session: any, callback: (error: any) => void): void => {
+  touch = (id: string, session: any, callback: ((error: any) => void) | undefined): void => {
     const ttl = this.getTTL(session);
     const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
     this.repository
       .update(id, { expiresAt })
-      .then(() => callback(null))
-      .catch((error: any) => callback(error));
+      .then(() => (callback ? callback(null) : {}))
+      .catch((error: any) => (callback ? callback(error) : {}));
   };
 
   /**
