@@ -16,7 +16,17 @@
     "prepublishOnly": "yarn run build:production",
     "clean": "rimraf ./lib",
     "build:production": "yarn run clean && webpack --config ./webpack/production.ts",
-    "build:development": "yarn run clean && webpack --config ./webpack/development.ts"
+    "build:development": "yarn run clean && webpack --config ./webpack/development.ts",
+    "prettier:diff": "prettier --write --config ./.prettierrc --list-different 'src/**/*.ts'",
+    "precommit": "lint-staged",
+    "postcommit": "git update-index --again"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write --config ./.prettierrc --config-precedence file-override",
+      "tslint --project .",
+      "git add"
+    ]
   },
   "peerDependencies": {
     "typeorm": "^0.2.3"
@@ -30,11 +40,16 @@
     "@types/webpack-node-externals": "^1.6.3",
     "awesome-typescript-loader": "^5.0.0",
     "express-session": "^1.15.6",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
     "ts-node": "^6.0.1",
     "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.13.0",
     "tslint-config-standard": "^7.0.0",
     "tslint-loader": "^3.6.0",
+    "tslint-microsoft-contrib": "^5.0.3",
     "typeorm": "^0.2.3",
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
