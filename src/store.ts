@@ -54,7 +54,7 @@ export class TypeormStore extends Store {
     this.ttl = options.ttl;
     this.expirationInterval = options.expirationInterval || 86400;
 
-    if (options.clearExpired) {
+    if (options.clearExpired === undefined || options.clearExpired) {
       this.setExpirationInterval(this.expirationInterval);
     }
   }
