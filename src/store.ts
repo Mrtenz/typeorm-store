@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { Store } from 'express-session';
 
 export interface SessionEntity {
@@ -22,14 +22,26 @@ export interface Options {
   repository: Repository<SessionEntity>;
 
   /**
-   * Session TTL in seconds. Defaults to 86400 (1 day)
+   * Session TTL in seconds. Defaults to 86400 (1 day).
    */
   ttl?: number;
+
+  /**
+   * Whether to remove expired sessions from the database. Defaults to true.
+   */
+  clearExpired?: boolean;
+
+  /**
+   * The interval between checking for expired sessions in seconds. Defaults to 86400 (1 day).
+   */
+  expirationInterval?: number;
 }
 
 export class TypeormStore extends Store {
   private readonly repository: Repository<SessionEntity>;
-  private readonly ttl: number | undefined;
+  private readonly ttl?: number;
+  private readonly expirationInterval: number;
+  private expirationIntervalId?: number;
 
   constructor(options: Options) {
     super(options);
@@ -40,6 +52,11 @@ export class TypeormStore extends Store {
 
     this.repository = options.repository;
     this.ttl = options.ttl;
+    this.expirationInterval = options.expirationInterval || 86400;
+
+    if (options.clearExpired) {
+      this.setExpirationInterval(this.expirationInterval);
+    }
   }
 
   /**
@@ -59,22 +76,22 @@ export class TypeormStore extends Store {
    * @param {string} id
    * @param {(error: any) => void} callback
    */
-  destroy = (id: string, callback: ((error: any) => void) | undefined): void => {
+  destroy = (id: string, callback?: ((error: any) => void)): void => {
     this.repository
       .delete(id)
-      .then(() => (callback ? callback(null) : {}))
-      .catch((error: any) => (callback ? callback(error) : {}));
+      .then(() => callback && callback(null))
+      .catch((error: any) => callback && callback(error));
   };
 
   /**
    * Clear all sessions.
    * @param {(error: any) => void} callback
    */
-  clear = (callback: ((error: any) => void) | undefined): void => {
+  clear = (callback?: ((error: any) => void)): void => {
     this.repository
       .clear()
-      .then(() => (callback ? callback(null) : {}))
-      .catch((error: any) => (callback ? callback(error) : {}));
+      .then(() => callback && callback(null))
+      .catch((error: any) => callback && callback(error));
   };
 
   /**
@@ -112,7 +129,7 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  set = (id: string, session: any, callback: ((error: any) => void) | undefined): void => {
+  set = (id: string, session: any, callback?: ((error: any) => void)): void => {
     let data;
     try {
       data = JSON.stringify(session);
@@ -128,8 +145,8 @@ export class TypeormStore extends Store {
 
     this.repository
       .save({ id, data, expiresAt })
-      .then(() => (callback ? callback(null) : {}))
-      .catch((error: any) => (callback ? callback(error) : {}));
+      .then(() => callback && callback(null))
+      .catch((error: any) => callback && callback(error));
   };
 
   /**
@@ -138,14 +155,49 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  touch = (id: string, session: any, callback: ((error: any) => void) | undefined): void => {
+  touch = (id: string, session: any, callback?: ((error: any) => void)): void => {
     const ttl = this.getTTL(session);
     const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
     this.repository
       .update(id, { expiresAt })
-      .then(() => (callback ? callback(null) : {}))
-      .catch((error: any) => (callback ? callback(error) : {}));
+      .then(() => callback && callback(null))
+      .catch((error: any) => callback && callback(error));
+  };
+
+  /**
+   * Remove all expired sessions from the database.
+   * @param {(error: any) => void} callback
+   */
+  clearExpiredSessions = (callback?: (error: any) => void) => {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+
+    this.repository
+      .delete({ expiresAt: LessThan(timestamp) })
+      .then(() => callback && callback(null))
+      .catch((error: any) => callback && callback(error));
+  };
+
+  /**
+   * Set the expiration interval in seconds. If the interval in seconds is not set, it defaults to the store's expiration interval.
+   * @param {number} interval
+   */
+  setExpirationInterval = (interval?: number) => {
+    interval = interval || this.expirationInterval;
+
+    this.clearExpirationInterval();
+    this.expirationIntervalId = setInterval(this.clearExpiredSessions, interval);
+  };
+
+  /**
+   * Clear the expiration interval if it exists.
+   */
+  clearExpirationInterval = () => {
+    if (this.expirationIntervalId) {
+      clearInterval(this.expirationIntervalId);
+    }
+
+    this.expirationIntervalId = undefined;
   };
 
   /**
@@ -153,12 +205,12 @@ export class TypeormStore extends Store {
    * @param session
    * @return {number}
    */
-  private getTTL(session: any): number {
+  private getTTL = (session: any): number => {
     if (this.ttl) {
       return this.ttl;
     }
     return session.cookie && session.cookie.maxAge
       ? Math.floor(session.cookie.maxAge / 1000)
       : 86400;
-  }
+  };
 }
