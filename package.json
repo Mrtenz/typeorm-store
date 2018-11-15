@@ -17,9 +17,7 @@
     "clean": "rimraf ./lib",
     "build:production": "yarn run clean && webpack --config ./webpack/production.ts",
     "build:development": "yarn run clean && webpack --config ./webpack/development.ts",
-    "prettier:diff": "prettier --write --config ./.prettierrc --list-different 'src/**/*.ts'",
-    "precommit": "lint-staged",
-    "postcommit": "git update-index --again"
+    "prettier:diff": "prettier --write --config ./.prettierrc --list-different 'src/**/*.ts'"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -55,5 +53,11 @@
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
     "webpack-node-externals": "^1.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "git update-index --again",
+      "pre-commit": "lint-staged"
+    }
   }
 }
