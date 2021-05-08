@@ -186,7 +186,7 @@ export class TypeormStore extends Store {
     interval = interval || this.expirationInterval;
 
     this.clearExpirationInterval();
-    this.expirationIntervalId = setInterval(this.clearExpiredSessions, interval);
+    this.expirationIntervalId = setInterval(this.clearExpiredSessions, interval * 1000);
   };
 
   /**
