@@ -1,11 +1,11 @@
 {
-  "name": "typeorm-store-g",
-  "version": "1.0.2",
+  "name": "typeorm-store",
+  "version": "2.0.0",
   "description": "A TypeORM-based store for express-session",
-  "main": "lib/index.js",
+  "main": "lib/typeormStore.js",
   "typings": "typings/index.d.ts",
-  "repository": "https://github.com/bigplayalman/typeorm-store.git",
-  "author": "bigplayalman",
+  "repository": "https://github.com/Mrtenz/typeorm-store.git",
+  "author": "Maarten Zuidhoorn <maarten@zuidhoorn.com> (https://morten.sh/)",
   "license": "MIT",
   "files": [
     "lib",
@@ -15,7 +15,7 @@
   "scripts": {
     "prepublishOnly": "yarn run build:production",
     "clean": "rimraf ./lib",
-    "build:production": "yarn run clean && tsc",
+    "build:production": "yarn run clean && webpack --config ./webpack/production.ts",
     "build:development": "yarn run clean && webpack --config ./webpack/development.ts",
     "prettier:diff": "prettier --write --config ./.prettierrc --list-different 'src/**/*.ts'"
   },
@@ -27,12 +27,12 @@
     ]
   },
   "peerDependencies": {
-    "typeorm": "^0.3.7"
+    "typeorm": "^0.2.7"
   },
   "devDependencies": {
     "@types/express-session": "^1.15.11",
     "@types/node": "^10.12.8",
-    "@types/webpack": "^5.28.0",
+    "@types/webpack": "^4.4.19",
     "@types/webpack-env": "^1.13.6",
     "@types/webpack-merge": "^4.1.3",
     "@types/webpack-node-externals": "^1.6.3",
@@ -47,8 +47,8 @@
     "tslint-config-prettier": "^1.16.0",
     "tslint-loader": "^3.5.4",
     "tslint-microsoft-contrib": "^5.2.1",
-    "typeorm": "^0.3.7",
-    "typescript": "^4.1.2",
+    "typeorm": "^0.2.7",
+    "typescript": "^3.1.6",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",

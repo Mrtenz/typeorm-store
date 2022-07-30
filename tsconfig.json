@@ -7,7 +7,7 @@
     "declarationDir": "typings",
     "sourceMap": true,
     "outDir": "./lib",
-    "strict": true,
+    "strict": true
   },
   "include": [
     "./src/**/*.ts"
