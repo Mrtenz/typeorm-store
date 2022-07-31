@@ -51,4 +51,6 @@ app.use(session({
 
 ## Options
 * `repository` (required) - The repository of the session entity.
-* `ttl` (optional) - The time to live for the session in milliseconds. Defaults to 86400000 (1 day).
+* `ttl` (optional) - The time to live for the session in seconds. Defaults to 86400 (1 day).
+* `expirationInterval` (optional) - The interval in seconds to check for expired sessions.
+   Defaults to 86400 (1 minute).
