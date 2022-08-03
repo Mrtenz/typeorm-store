@@ -113,7 +113,7 @@ export class TypeormStore extends Store {
   get = (id: string, callback: (error: any, session?: any) => void): void => {
     this.repository
       .findOne({ where: { id } })
-      .then((session: SessionEntity | null) => {
+      .then(session => {
         if (!session) {
           return callback(null);
         }
