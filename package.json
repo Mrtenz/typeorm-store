@@ -20,13 +20,14 @@
     "prettier:diff": "prettier --write --config ./.prettierrc --list-different 'src/**/*.ts'"
   },
   "lint-staged": {
-    "./src/**/*.{ts,tsx}": [
+    "*.{ts,tsx}": [
       "prettier --write --config ./.prettierrc --config-precedence file-override",
       "tslint --project .",
       "git add"
     ]
   },
   "peerDependencies": {
+    "express-session": "^1.17.3",
     "typeorm": "^0.3.0"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "tslint-loader": "^3.5.4",
     "tslint-microsoft-contrib": "^5.2.1",
     "typeorm": "^0.3.0",
+    "express-session": "^1.17.3",
     "typescript": "^3.1.6",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
@@ -58,8 +60,5 @@
       "post-commit": "git update-index --again",
       "pre-commit": "lint-staged"
     }
-  },
-  "dependencies": {
-    "express-session": "^1.17.3"
   }
 }

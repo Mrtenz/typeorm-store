@@ -17,8 +17,13 @@ export interface SessionEntity {
    */
   data: string;
 }
-
-export interface Options {
+interface EventEmitterOptions {
+  /**
+   * Enables automatic capturing of promise rejection.
+   */
+  captureRejections?: boolean | undefined;
+}
+export interface Options extends EventEmitterOptions {
   repository: Repository<SessionEntity>;
 
   /**
@@ -43,7 +48,7 @@ export class TypeormStore extends Store {
   private readonly expirationInterval: number;
   private expirationIntervalId?: number;
 
-  constructor(options: any) {
+  constructor(options: Options) {
     super(options);
 
     if (!options.repository) {
@@ -76,7 +81,7 @@ export class TypeormStore extends Store {
    * @param {string} id
    * @param {(error: any) => void} callback
    */
-  destroy = (id: string, callback?: ((error: any) => void)): void => {
+  destroy = (id: string, callback?: (error: any) => void): void => {
     this.repository
       .delete(id)
       .then(() => callback && callback(null))
@@ -87,7 +92,7 @@ export class TypeormStore extends Store {
    * Clear all sessions.
    * @param {(error: any) => void} callback
    */
-  clear = (callback?: ((error: any) => void)): void => {
+  clear = (callback?: (error: any) => void): void => {
     this.repository
       .clear()
       .then(() => callback && callback(null))
@@ -129,7 +134,7 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  set = (id: string, session: any, callback?: ((error: any) => void)): void => {
+  set = (id: string, session: any, callback?: (error: any) => void): void => {
     let data;
     try {
       data = JSON.stringify(session);
@@ -155,7 +160,7 @@ export class TypeormStore extends Store {
    * @param session
    * @param {(error: any) => void} callback
    */
-  touch = (id: string, session: any, callback?: ((error: any) => void)): void => {
+  touch = (id: string, session: any, callback?: (error: any) => void): void => {
     const ttl = this.getTTL(session);
     const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 
