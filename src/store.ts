@@ -43,7 +43,7 @@ export class TypeormStore extends Store {
   private readonly expirationInterval: number;
   private expirationIntervalId?: number;
 
-  constructor(options: Options) {
+  constructor(options: any) {
     super(options);
 
     if (!options.repository) {
